@@ -9,7 +9,6 @@ from google.cloud import vision
 from google.cloud.vision import types
 import pandas as pd
 import re
-import datefinder
 from iteration_utilities import unique_everseen
 
 
@@ -25,16 +24,19 @@ image_path = r'Image path'
 
 
 try:
-    
+
+    # read image file in rgb format 
     with io.open (image_path, 'rb') as image_file:
         content = image_file.read()
+        
+    # extract text from image and return response     
     image = vision.types.Image(content = content)
     response = client.document_text_detection(image=image)
     docText = response.full_text_annotation.text
 except:
     print('error: check file or api is correct')
 
-
+# split the data based on line by line 
 docText_list = docText.splitlines( )
 
 try:
@@ -45,6 +47,8 @@ try:
         data = docText_list[i]
         data = data.strip()
         #print(data)
+
+        # extracting required information from data
 
         if 'Name' in data :  
 
@@ -132,8 +136,7 @@ except:
 
 
 
-
-#print(Asianet_bill_details)
+# unique_everseen to find the unique values 
 details_unique= list(unique_everseen(Asianet_bill_details))    
             
 print(details_unique)
